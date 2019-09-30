@@ -10,6 +10,11 @@ conda activate kedro
 
 pip install kedro
 pip install kedro-airflow
+pip install kedro-viz
+
+pip install tzlocal==1.5.1 --force-reinstall
+pip install ipython
+pip install airflow
 ```
 
 
@@ -31,6 +36,7 @@ kedro install
 
 
 ### Create Data Pipeline
+
 
 ### Package and Deploy to Airflow
 

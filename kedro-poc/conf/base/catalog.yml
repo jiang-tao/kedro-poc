@@ -3,3 +3,14 @@
 # Documentation for this file format can be found in the kedro docs under `Accessing data`
 # You can access the kedro docs by running `kedro docs`
 
+companies:
+  type: CSVLocalDataSet
+  filepath: data/01_raw/companies.csv
+
+reviews:
+  type: CSVLocalDataSet
+  filepath: data/01_raw/reviews.csv
+
+shuttles:
+  type: kedro_poc.io.xls_local.ExcelLocalDataSet
+  filepath: data/01_raw/shuttles.xlsx

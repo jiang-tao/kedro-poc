@@ -34,13 +34,13 @@ class ExcelLocalDataSet(AbstractDataSet):
     def _describe(self) -> Dict[str, Any]:
         return dict(filepath=self._filepath,
                     engine=self._engine,
-                    load_args=self._load_arges,
-                    safe_args=self._save_args)
+                    load_args=None if not hasattr(self,'_load_arges') else self._load_args,
+                    safe_args=None if not hasattr(self,'_save_args') else self._save_args)
     
     def __init__(
         self,
         filepath: str,
-        engine: str = "xlswriter",
+        engine: str = "xlsxwriter",
         load_args: Dict[str,Any] = None,
         save_args: Dict[str,Any] = None,
     ) -> None:
@@ -49,7 +49,7 @@ class ExcelLocalDataSet(AbstractDataSet):
 
         Args:
             engine: The engine used to write to excel files. The default
-                          engine is 'xlswriter'.
+                          engine is 'xlsxwriter'.
 
             filepath: path to an Excel file.
 
@@ -66,7 +66,8 @@ class ExcelLocalDataSet(AbstractDataSet):
         """
         self._filepath = filepath
         default_save_args = {}
-        default_load_args = {"engine":"xls"}
+        # default_load_args = {"engine":"xlrd"}
+        default_load_args = {"engine":None}
 
         self._load_args = {**default_load_args, **load_args} \
             if load_args is not None else default_load_args

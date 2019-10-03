@@ -33,7 +33,28 @@ kedro install
 
 ### Config Data Catalog
 
+In conf/[base|local]/catalog.yml, add the data catalogs
 
+```
+<dataset_name>:
+    type: <dataset_type>
+    filepath: <datafile_path>
+```
+
+For example,
+
+```
+shuttles:
+  type: kedro_poc.io.xls_local.ExcelLocalDataSet
+  filepath: data/01_raw/shuttles.xlsx
+```
+
+Test the data catalog. Start iPython terminal by typing "`python kedro_cli.py ipython`"
+
+```
+df=context.catalog.load('shuttles')
+df.head()
+```
 
 ### Create Data Pipeline
 

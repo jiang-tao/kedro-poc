@@ -14,3 +14,20 @@ reviews:
 shuttles:
   type: kedro_poc.io.xls_local.ExcelLocalDataSet
   filepath: data/01_raw/shuttles.xlsx
+
+preprocessed_companies:
+  type: CSVLocalDataSet
+  filepath: data/02_intermediate/preprocessed_companies.csv
+
+preprocessed_shuttles:
+  type: CSVLocalDataSet
+  filepath: data/02_intermediate/preprocessed_shuttles.csv
+
+master_table:
+  type: CSVLocalDataSet
+  filepath: data/03_primary/master_table.csv
+
+regressor:
+  type: PickleLocalDataSet
+  filepath: data/06_models/regressor.pickle
+  versioned: true

@@ -27,7 +27,21 @@
 # limitations under the License.
 """Pipeline construction."""
 
-from kedro.pipeline import Pipeline
+from typing import Dict
+
+from kedro.pipeline import node, Pipeline
+
+from kedro_poc.nodes.data_engineering import (
+    preprocess_companies, 
+    preprocess_shuttles,
+    create_master_table
+)
+
+from kedro_poc.nodes.price_prediction import (
+    evaluate_model,
+    split_data,
+    train_model,
+)
 
 # Here you can define your data-driven pipeline by importing your functions
 # and adding them to the pipeline as follows:
@@ -43,20 +57,76 @@ from kedro.pipeline import Pipeline
 # project by calling:
 #
 # $ kedro run
-#
 
 
-def create_pipeline(**kwargs):
+def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     """Create the project's pipeline.
 
     Args:
         kwargs: Ignore any additional arguments added in the future.
 
     Returns:
-        Pipeline: The resulting pipeline.
+        A mapping from a pipeline name to a ``Pipeline`` object.
 
     """
+    de_pipeline = Pipeline(
+        [
+            node(preprocess_companies, "companies", "preprocessed_companies", name="preprocess1"),
+            node(preprocess_shuttles, "shuttles", "preprocessed_shuttles", name="preprocess2"),
+            node(create_master_table,
+                ["preprocessed_shuttles","preprocessed_companies", "reviews"],
+                "master_table",
+                name="master_table"
+            )
+        ],
+        name="de_tag"
+    )
 
-    pipeline = Pipeline([])
+    ds_pipeline = Pipeline(
+        [
+            node(
+                split_data,
+                ["master_table", "parameters"],
+                ["X_train", "X_test", "y_train", "y_test"],
+            ),
+            node(train_model, ["X_train", "y_train"], "regressor"),
+            node(evaluate_model, ["regressor", "X_test", "y_test"], None),
+        ],
+        name="ds_tag",
+    )
 
-    return pipeline
+    return {
+        "de":de_pipeline, 
+        "ds":ds_pipeline,
+        "__default__": de_pipeline + ds_pipeline
+    }
+    # return {
+    #     "__default__": Pipeline([])
+    # }
+
+
+# def create_pipeline(**kwargs):
+#     """Create the project's pipeline.
+
+#     Args:
+#         kwargs: Ignore any additional arguments added in the future.
+
+#     Returns:
+#         Pipeline: The resulting pipeline.
+
+#     """
+
+#     pipeline = Pipeline(
+#         [
+#             node(preprocess_companies, "companies", "preprocessed_companies", name="preprocess1"),
+#             node(preprocess_shuttles, "shuttles", "preprocessed_shuttles", name="preprocess2"),
+#             node(create_master_table,
+#                 ["preprocessed_shuttles","preprocessed_companies", "reviews"],
+#                 "master_table",
+#                 name="master_table"
+#             )
+#         ]
+#     )
+
+#     return pipeline
+

@@ -29,13 +29,13 @@
 """Application entry point."""
 
 from pathlib import Path
-from typing import Iterable, Type
+from typing import Iterable, Type, Dict
 
-from kedro.context import KedroContext, load_context
+from kedro.context import KedroContext, load_context, KedroContextError
 from kedro.runner import AbstractRunner
 from kedro.pipeline import Pipeline
 
-from kedro_poc.pipeline import create_pipeline
+from kedro_poc.pipeline import create_pipelines
 
 
 class ProjectContext(KedroContext):
@@ -44,12 +44,11 @@ class ProjectContext(KedroContext):
 
     """
 
-    project_name = "Kedro POC"
-    project_version = "0.15.1"
+    project_name = "kedro_poc1"
+    project_version = "0.15.2"
 
-    @property
-    def pipeline(self) -> Pipeline:
-        return create_pipeline()
+    def _get_pipelines(self) -> Dict[str, Pipeline]:
+        return create_pipelines()
 
 
 def main(
